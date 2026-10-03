@@ -1,0 +1,4 @@
+experience/node_modules/
+experience/*.tsbuildinfo
+.DS_Store
+Thumbs.db
