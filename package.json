@@ -1,0 +1,12 @@
+{
+  "name": "rudhira",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "build": "npm run build --prefix experience"
+  }
+}
+

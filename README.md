@@ -28,3 +28,7 @@ Explore five destinations: Blood Donation, Plasma Donation, Plasma Fractionation
 The donation and enquiry pages are labeled demos and send no data. Story cards are fictional editorial samples. Content requiring owner or clinical review is flagged in the configuration. Connect approved service links and contact details before launch. No eligibility rules, partnerships, certifications, outcomes, or impact statistics are claimed.
 
 One connected world. Many ways to give life.
+
+## Deploy on Vercel
+
+Import this repository into Vercel with the repository root selected. `vercel.json` installs the locked dependencies in `experience`, builds the source, and publishes `website` at the deployment root. Node.js 24 is specified in the root package. No environment variables are required. Keep the project connected to `main` for automatic production deployments after pushes.
