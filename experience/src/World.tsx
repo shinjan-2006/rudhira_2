@@ -51,8 +51,7 @@ function CameraRig({
   mobile,
   entered,
   reduced,
-  paused,
-}: Pick<WorldProps, "selected" | "mobile" | "entered" | "reduced" | "paused">) {
+}: Pick<WorldProps, "selected" | "mobile" | "entered" | "reduced">) {
   const { camera } = useThree();
   const controls = useRef<ComponentRef<typeof OrbitControls>>(null);
   const previous = useRef<{
@@ -62,7 +61,7 @@ function CameraRig({
   const tween = useRef<gsap.core.Timeline | null>(null);
   const last = useRef<DestinationId | null>(null);
   const interaction = useRef(false);
-  interaction.current = entered && !paused && !reduced && !selected;
+  interaction.current = entered && !selected;
   useEffect(() => {
     if (!controls.current) return;
     tween.current?.kill();
@@ -134,10 +133,10 @@ function CameraRig({
     <OrbitControls
       ref={controls}
       makeDefault
-      enabled={entered && !selected && !paused && !reduced}
+      enabled={entered && !selected}
       enableZoom={false}
       enablePan={false}
-      enableDamping
+      enableDamping={!reduced}
       dampingFactor={0.065}
       rotateSpeed={0.4}
       minPolarAngle={1.15}
