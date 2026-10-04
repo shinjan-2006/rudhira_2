@@ -1,4 +1,15 @@
+.gstack/
 experience/node_modules/
+node_modules/
 experience/*.tsbuildinfo
-.DS_Store
+
+# OS/editor cruft
 Thumbs.db
+.DS_Store
+
+# Office lock files
+~$*.pptx
+~$*.docx
+
+.vercel
+.env*

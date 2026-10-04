@@ -1,0 +1,9 @@
+node_modules/
+experience/node_modules/
+.env*
+.git/
+website/
+docs/
+*.mp4
+*.pptx
+*.pdf

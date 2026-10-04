@@ -1,8 +1,18 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "npm ci --prefix experience",
+  "installCommand": "npm ci && npm ci --prefix experience",
   "buildCommand": "npm run build --prefix experience",
-  "outputDirectory": "website"
+  "outputDirectory": "website",
+  "functions": { "api/network.js": { "maxDuration": 30 } },
+  "rewrites": [{ "source": "/network", "destination": "/network.html" }],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    }
+  ]
 }
-

@@ -33,7 +33,7 @@ export const config = {
   },
   actions: {
     opportunities: {
-      url: "",
+      url: "./network.html?role=donor&view=camps",
       title: "Explore donation opportunities",
       review:
         "Connect to a verified donation directory or approved centre. No appointments are available in this demo.",
@@ -45,7 +45,7 @@ export const config = {
         "Have a qualified clinical reviewer approve all guidance and add a verified information link.",
     },
     connect: {
-      url: "",
+      url: "./network.html",
       title: "Connect with Rudhira",
       review:
         "Connect this demo form to an approved endpoint and privacy policy before collecting data.",

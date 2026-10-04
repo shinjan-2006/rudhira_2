@@ -783,7 +783,8 @@ export default function App() {
             Plasma Partners
           </button>
           <button onClick={() => onSelect("about")}>Our Story</button>
-          <button onClick={() => onAction("connect")}>Contact</button>
+          <button onClick={() => location.assign("./network.html?view=rewards")}>Rewards</button>
+          <button onClick={() => location.assign("./network.html")}>Sign in</button>
         </nav>
         <button
           className="header-action"

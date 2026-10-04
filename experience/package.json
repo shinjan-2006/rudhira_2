@@ -9,6 +9,7 @@
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
+    "@neondatabase/auth": "0.5.0-beta",
     "@react-three/drei": "^10.7.0",
     "@react-three/fiber": "^9.4.0",
     "gsap": "^3.13.0",
