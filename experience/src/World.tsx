@@ -139,7 +139,7 @@ function CameraRig({
       enablePan={false}
       enableDamping
       dampingFactor={0.065}
-      rotateSpeed={0.32}
+      rotateSpeed={0.4}
       minPolarAngle={1.15}
       maxPolarAngle={1.98}
       minAzimuthAngle={-0.5}
@@ -160,7 +160,7 @@ function Life({
   const group = useRef<THREE.Group>(null);
   useFrame((state, dt) => {
     if (group.current && !still) {
-      group.current.rotation.y += dt * 0.07;
+      group.current.rotation.y += dt * 0.1;
       group.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.2) * 0.07;
     }
   });
@@ -469,9 +469,9 @@ function Ambient({
         data[i].pos[0] + Math.sign(data[i].pos[0]) * displacement.current * 1.3;
       obj.position.y =
         data[i].pos[1] + (still ? 0 : Math.sin(t * 0.18 + i) * 0.12);
-      if (!still) obj.rotation.z += dt * 0.028;
+      if (!still) obj.rotation.z += dt * 0.04;
     });
-    if (stars.current && !still) stars.current.rotation.z += dt * 0.004;
+    if (stars.current && !still) stars.current.rotation.z += dt * 0.0056;
   });
   return (
     <>
