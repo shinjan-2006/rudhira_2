@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { api, auth } from "./auth";
 import { roleNames, type Role } from "./types";
 type Field = {
@@ -114,7 +114,13 @@ export function AuthForm({
   const [email, setEmail] = useState(""),
     [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [resendSeconds, setResendSeconds] = useState(0);
+  useEffect(() => {
+    if (!resendSeconds) return;
+    const timer = window.setTimeout(() => setResendSeconds((s) => s - 1), 1000);
+    return () => window.clearTimeout(timer);
+  }, [resendSeconds]);
   async function send(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = Object.fromEntries(
@@ -124,7 +130,7 @@ export function AuthForm({
     setError("");
     setNotice("");
     try {
-      const address = data.email || email;
+      const address = (data.email || email).trim();
       setEmail(address);
       const result =
         mode === "signup"
@@ -165,7 +171,10 @@ export function AuthForm({
         setNotice("Password updated. You can sign in.");
       } else if (mode === "signup") {
         setMode("verify");
-        setNotice("Check your email for a verification code.");
+        setResendSeconds(60);
+        setNotice(
+          "Verification requested. Check your inbox and spam folder for a six-digit code.",
+        );
       } else if (mode === "verify") {
         setMode("signin");
         setNotice("Email verified. Sign in to finish your profile.");
@@ -174,21 +183,39 @@ export function AuthForm({
         await onSession();
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Please try again.");
+      const message = e instanceof Error ? e.message : "Please try again.";
+      if (mode === "signin" && /email.*(not|isn.t).*verified/i.test(message)) {
+        setMode("verify");
+        setNotice(
+          "Your email still needs verification. Request a new code below.",
+        );
+      } else {
+        setError(message);
+      }
     } finally {
       setBusy(false);
     }
   }
-  async function resend() {
+  async function resend(event: MouseEvent<HTMLButtonElement>) {
+    const input = event.currentTarget.form?.elements.namedItem(
+      "email",
+    ) as HTMLInputElement | null;
+    if (!input?.reportValidity() || busy || resendSeconds) return;
+    const address = input.value.trim();
+    setEmail(address);
     setBusy(true);
     setError("");
+    setNotice("");
     try {
-      const r = await auth.emailOtp.sendVerificationOtp({
-        email,
-        type: "email-verification",
+      const r = await auth.sendVerificationEmail({
+        email: address,
+        callbackURL: `${location.origin}/network.html?role=${role}`,
       });
       if (r.error) throw new Error(r.error.message);
-      setNotice("A new code has been sent.");
+      setResendSeconds(60);
+      setNotice(
+        "Verification email requested. Check your inbox and spam folder; delivery can take a few minutes.",
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Try again.");
     } finally {
@@ -211,7 +238,9 @@ export function AuthForm({
           ? "Welcome back. Your next connection starts here."
           : mode === "signup"
             ? "Create your secure account, then complete your network profile."
-            : "We’ll help you regain access securely."}
+            : mode === "verify"
+              ? "Enter the six-digit code from your verification email."
+              : "We’ll help you regain access securely."}
       </p>
       {mode === "signup" ? (
         <label>
@@ -219,20 +248,17 @@ export function AuthForm({
           <input name="name" autoComplete="name" required maxLength={120} />
         </label>
       ) : null}
-      {!["verify", "reset"].includes(mode) || !email ? (
-        <label>
-          Email
-          <input
-            name="email"
-            type="email"
-            autoComplete="email"
-            defaultValue={email}
-            required
-          />
-        </label>
-      ) : (
-        <p className="address-note">Code sent to {email}</p>
-      )}
+      <label>
+        Email
+        <input
+          name="email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+      </label>
       {["signin", "signup", "reset"].includes(mode) ? (
         <label>
           {mode === "reset" ? "New password" : "Password"}
@@ -316,7 +342,9 @@ export function AuthForm({
               onClick={() => {
                 setMode("verify");
                 setError("");
-                setNotice("Enter your registered email and verification code.");
+                setNotice(
+                  "Enter your registered email. Request a code below if you haven't received one.",
+                );
               }}
             >
               Verify an existing account
@@ -335,8 +363,14 @@ export function AuthForm({
           </button>
         )}
         {mode === "verify" ? (
-          <button type="button" onClick={resend} disabled={busy || !email}>
-            Resend code
+          <button
+            type="button"
+            onClick={resend}
+            disabled={busy || !email.trim() || resendSeconds > 0}
+          >
+            {resendSeconds
+              ? `Request again in ${resendSeconds}s`
+              : "Send verification code"}
           </button>
         ) : null}
       </div>
