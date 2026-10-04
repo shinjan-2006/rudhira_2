@@ -1,6 +1,6 @@
 # RUDHIRA — A world of life
 
-An original interactive experience built with React 19, TypeScript, React Three Fiber 9, Drei, Three.js, and GSAP. All forms, geometries, ribbons, lighting, and particles are generated locally. No API keys, model downloads, paid assets, tracking, or runtime AI services are used.
+An original interactive experience built with React 19, TypeScript, React Three Fiber 9, Drei, Three.js, and GSAP. Scene geometries, ribbons, lighting and particles are generated locally. The network portal uses Neon Auth and the Vercel API described in [NETWORK.md](../NETWORK.md).
 
 ## Run and build
 
@@ -23,7 +23,7 @@ The generated `website/accessible.html` contains the full essential content with
 - `src/styles.css`: editorial typography, responsive compositions, ivory panels, visible focus, motion preferences.
 - `scripts/generate-guide.mjs`: generates the independent plain HTML guide from the same configuration.
 
-Empty action URLs route to local editable destination pages: `#opportunities`, `#plasma-guide`, and `#connect`. Set `config.actions.<id>.url` to an approved URL to route directly to a real service. The demo forms send and save nothing. There is no database or booking service. Add a verified endpoint, privacy policy, and consent flow before collecting personal information.
+Empty action URLs route to local editable destination pages: `#opportunities`, `#plasma-guide`, and `#connect`. Configured donation and connection actions open the live network portal at `network.html`. Separate donor, hospital and fractionator forms use Neon Auth, while camp bookings, verified contributions and recognition use the role-scoped backend. Configure the environment and database as described in [NETWORK.md](../NETWORK.md) before running authenticated flows.
 
 ## Interaction and accessibility
 
@@ -31,7 +31,7 @@ Drag the canvas to explore with damping. A click is accepted only below a five-p
 
 Dialogs focus the close button, trap Tab/Shift+Tab, support Escape, and make background controls inert. A skip link switches to the accessible list. Reduced motion removes ambient movement and transition animation. A separate pause control stops ambient movement and dragging. Mobile uses fewer cells and particles, lower pixel density, and a scrolling bottom content sheet. Audio is generated with Web Audio and remains off until explicitly enabled. Audio fades out when the document is hidden.
 
-Loading progress reflects seven completed geometry preparation stages, followed by actual rendered frames; no fake timed progress is used. The previous video design is preserved in the original local workspace at `C:/Users/User/Desktop/rudhira/website/classic/`; it is not part of this new repository.
+Loading progress reflects seven completed geometry preparation stages, followed by actual rendered frames; no fake timed progress is used. The previous video design is preserved in the original local workspace and is not part of this repository.
 
 ## Before publishing
 

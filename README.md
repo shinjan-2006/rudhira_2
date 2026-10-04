@@ -25,10 +25,12 @@ Run `npm run build` inside `experience`. The production site is written to `webs
 
 Explore five destinations: Blood Donation, Plasma Donation, Plasma Fractionation, Stories of Life, and About Rudhira. Drag with inertia, select a destination to move the camera, and close it to return. Keyboard navigation, Escape, reduced motion, optional sound, a 2D list, and a WebGL-free fallback are included.
 
-The donation and enquiry pages are labeled demos and send no data. Story cards are fictional editorial samples. Content requiring owner or clinical review is flagged in the configuration. Connect approved service links and contact details before launch. No eligibility rules, partnerships, certifications, outcomes, or impact statistics are claimed.
+The network portal at `/network` provides separate donor, hospital and plasma fractionator accounts, verified contribution records and donor recognition. Neon Auth handles verified email/password sign-in, Neon Postgres stores network data, and Vercel runs the role-scoped API. Hospital and fractionator access requires organization approval. See [network architecture and setup](NETWORK.md) for configuration, rewards, administration and backend tests.
+
+Verification emails use Brevo SMTP configured directly in Neon Auth. The SMTP key is stored in Neon and is never committed to this repository. Production delivery has been verified. Story cards remain fictional editorial samples; content requiring owner or clinical review is flagged in the configuration.
 
 One connected world. Many ways to give life.
 
 ## Deploy on Vercel
 
-Import this repository into Vercel with the repository root selected. `vercel.json` installs the locked dependencies in `experience`, builds the source, and publishes `website` at the deployment root. Node.js 24 is specified in the root package. No environment variables are required. Keep the project connected to `main` for automatic production deployments after pushes.
+Import this repository into Vercel with the repository root selected. `vercel.json` installs the locked dependencies at the root and in `experience`, builds the source, and publishes `website` at the deployment root together with `/api/network`. Node.js 24 is specified in the root package. Configure database and authentication variables using [.env.example](.env.example) and [NETWORK.md](NETWORK.md); keep real credentials in the service configuration. The production site is [rudhira-2-experience.vercel.app](https://rudhira-2-experience.vercel.app/).

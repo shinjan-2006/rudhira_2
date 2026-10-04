@@ -50,4 +50,12 @@ All routes use `/api/network?route=NAME`. Public `GET public` returns published 
 
 `npm test` checks tier boundaries, rolling windows, role isolation and strict input validation. `npm run test:db` exercises enrollment, partner approval, booking capacity, hospital ownership, verified donations, duplicate prevention, rewards, partner coordination and suspension against real PostgreSQL. All synthetic records live inside a transaction that is rolled back, including on failure.
 
-The free shared Neon email sender supports verification/reset codes but is rate-limited. Configure a custom SMTP sender before broad public onboarding. This implementation is an operational network portal, not a clinical screening system, blood inventory system or licensed material-transfer system. Real partner verification, clinical operations and benefit availability remain the responsibility of the operator.
+## Verification email delivery
+
+Production Neon Auth uses Brevo as its custom SMTP provider. Configure `smtp-relay.brevo.com`, port `465`, the account's SMTP login and a dedicated SMTP key in Neon Auth's email provider settings. Use the verified sender address and `RUDHIRA` as the sender name. The SMTP key belongs only in Neon; no SMTP credential is needed in frontend code, GitHub or Vercel environment variables. Provider settings take effect without a frontend deployment.
+
+Use Neon's test email and Brevo's transactional event logs to distinguish a requested message from a delivered one. Verification and SMTP test messages have been confirmed delivered to the registered recipient. The portal's resend action calls `sendVerificationEmail` and limits repeated requests with a cooldown.
+
+Brevo may rewrite a sender using a free email address to its own sending domain. An owned, authenticated domain can be configured later. Track the SMTP key's expiry in Brevo and replace it in Neon before expiry; keys can also expire after inactivity. Never place verification codes or SMTP keys in diagnostic output.
+
+This implementation is an operational network portal, not a clinical screening system, blood inventory system or licensed material-transfer system. Real partner verification, clinical operations and benefit availability remain the responsibility of the operator.
