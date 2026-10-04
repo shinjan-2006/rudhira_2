@@ -117,10 +117,20 @@ test(
         ).id,
         claim.id,
       );
-      await rejects(
-        () => call(donor, "claim", { rewardId: "advisory", consent: true }),
-        403,
-      );
+    await rejects(
+      () => call(donor, "claim", { rewardId: "advisory", consent: true }),
+      403,
+    );
+    await rejects(()=>call(donor,'claim',{rewardId:'basic-health-panel',consent:true}),409);
+    await rejects(()=>call(hospital,'program',{rewardId:'basic-health-panel',enabled:true,provider:'Synthetic provider',details:'Synthetic program, rolled back.'}),403);
+    await call(donor,'program',{rewardId:'basic-health-panel',enabled:true,provider:'Synthetic provider',details:'Synthetic program, rolled back.'});
+    const secondCamp=await call(hospital,'camp',{...campBody,title:'Second rollback-only camp'});
+    const secondBooking=await call(donor,'book',{campId:secondCamp.id});
+    await call(hospital,'booking',{id:secondBooking.id,status:'confirmed'});
+    await client.query("UPDATE rudhira.camps SET starts_at=now()-interval '1 hour',ends_at=now()+interval '1 hour' WHERE id=$1",[secondCamp.id]);
+    const secondEvent=await call(hospital,'verify',{bookingId:secondBooking.id,reference:`TEST-${randomUUID()}`,donatedAt:new Date().toISOString(),screened:true});
+    assert.equal((await call(donor,'claim',{rewardId:'basic-health-panel',consent:true})).status,'requested');
+    await call(donor,'void',{id:secondEvent.id,reason:'Synthetic rollback test'});
       const request = await call(fractionator, "plasma", {
         title: "Rollback-only plasma request",
         city: "Synthetic city",

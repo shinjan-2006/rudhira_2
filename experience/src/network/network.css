@@ -1152,11 +1152,12 @@ small {
   .connection-art {
     height: 170px;
     width: 250px;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    opacity: 0.45;
-    z-index: -1;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    opacity: 0.85;
+    z-index: auto;
+    margin: 18px auto;
   }
   .join-story .story-footer {
     margin-top: 35px;

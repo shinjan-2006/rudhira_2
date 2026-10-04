@@ -51,6 +51,8 @@ test("admin access cannot be self selected and enrollment rejects promotion fiel
   process.env.NETWORK_ADMIN_USER_IDS = "owner-id";
   assert.throws(() => requireAdmin({ id: "attacker-id" }), { status: 403 });
   requireAdmin({ id: "owner-id" });
+  process.env.NETWORK_ADMIN_EMAILS='owner@example.invalid';
+  requireAdmin({id:'another-owner-id',email:'OWNER@example.invalid'});
   assert.throws(
     () =>
       validate("enroll", {
