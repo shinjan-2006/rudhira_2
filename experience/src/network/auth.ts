@@ -1,12 +1,11 @@
 import { createAuthClient } from "@neondatabase/auth";
+import { getAuthToken } from "./token";
 const base = import.meta.env.VITE_NEON_AUTH_URL;
 if (!base || base === "[SENSITIVE]")
   throw new Error("The network login service needs configuration.");
 export const auth = createAuthClient(base);
 async function getToken() {
-  const result = await auth.token();
-  if (result.error) throw new Error("Please sign in again.");
-  return result.data?.token;
+  return getAuthToken(base);
 }
 export async function api<T>(route: string, body?: unknown): Promise<T> {
   const token = route === "public" ? null : await getToken();

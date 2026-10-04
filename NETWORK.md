@@ -6,6 +6,7 @@ The 3D experience remains at `/`. The live network is `/network` (or `/network.h
 
 - Neon Managed Better Auth provides email/password authentication, email verification codes, password reset and sessions. Passwords never enter Rudhira's application database.
 - Vercel's `/api/network` function verifies each bearer JWT against the configured Neon JWKS and issuer, checks the canonical verified user, then applies database-owned role and organization approval checks.
+- The frontend retrieves its JWT from Neon Auth's `/token` endpoint using the managed session cookie. This bypasses a cache issue in the pinned SDK that can return a session object for `auth.token()` instead of an access-token response. Tokens are not persisted in application storage or logged.
 - Neon Postgres stores profiles, camps, bookings, verified donations, reward claims, plasma requirements, hospital responses, benefit programs and an audit trail. The private `rudhira` schema has RLS enabled with no public policies; only the server's database owner connection accesses it.
 - A profile belongs to one role. Public signup cannot select approval or administrator status. Hospitals and fractionators start pending. Administrator access comes only from `NETWORK_ADMIN_EMAILS` or `NETWORK_ADMIN_USER_IDS` in server configuration. An email must be verified by Neon before it can match the administrator allowlist.
 - Only approved hospitals can confirm their own camps' bookings and verify completed donations. A booking can produce one donation record, and a hospital reference is unique. Camp reservations use row locks to prevent oversubscription. Duplicate booking and certificate requests return the existing record.
@@ -49,6 +50,8 @@ All routes use `/api/network?route=NAME`. Public `GET public` returns published 
 ## Verification
 
 `npm test` checks tier boundaries, rolling windows, role isolation and strict input validation. `npm run test:db` exercises enrollment, partner approval, booking capacity, hospital ownership, verified donations, duplicate prevention, rewards, partner coordination and suspension against real PostgreSQL. All synthetic records live inside a transaction that is rolled back, including on failure.
+
+Authentication regression tests check JWT retrieval with session cookies, rejection of cached session objects and expired-session handling. Signing up again with an existing email does not change that account's password; already verified users should sign in with their original password.
 
 ## Verification email delivery
 

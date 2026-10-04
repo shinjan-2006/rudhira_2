@@ -173,7 +173,7 @@ export function AuthForm({
         setMode("verify");
         setResendSeconds(60);
         setNotice(
-          "Verification requested. Check your inbox and spam folder for a six-digit code.",
+          "For a new account, check your inbox for a six-digit code. Already registered? Sign in with your original password; creating the account again does not change it. If your email is still unverified, request a code below.",
         );
       } else if (mode === "verify") {
         setMode("signin");
